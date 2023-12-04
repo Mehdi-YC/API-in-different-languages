@@ -1,37 +1,29 @@
-use std::io::{Read, Write};
-use std::net::{TcpListener, TcpStream};
-use std::thread;
-
-fn handle_client(stream: TcpStream) {
-    let mut stream = stream;
-    let mut buffer = [0; 1024];
-
-    stream.read(&mut buffer).unwrap();
-    let request = String::from_utf8_lossy(&buffer[..]);
-
-    let response = if request.contains("/json") {
-        "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{\"message\": \"Hello, JSON!\"}"
-    } else {
-        "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<html><body><h1>Hello, HTML fro Rust!</h1></body></html>"
-    };
-
-    stream.write(response.as_bytes()).unwrap();
-    stream.flush().unwrap();
+fn is_palindrome(test : i32) -> bool{
+    let mut reversed = 0;
+    let mut next = test;
+    
+    while next  !=0 {
+        reversed = reversed * 10 + next % 10;
+        next= next / 10;
+    }
+   reversed == test
 }
 
-fn main() {
-    let listener = TcpListener::bind("127.0.0.1:8005").expect("Failed to bind to address");
+fn main(){
+println!("{}",is_palindrome(125));
+let mut x = vec![1,3,5,2];
+for u in &x{
+    println!("{}",u);
 
-    for stream in listener.incoming() {
-        match stream {
-            Ok(stream) => {
-                thread::spawn(|| {
-                    handle_client(stream);
-                });
-            }
-            Err(e) => {
-                eprintln!("Error accepting connection: {}", e);
-            }
-        }
-    }
+}
+println!("my vec {:?}",x);
+println!("double it and give it to the next process {:?}",x.iter().map(|it| it * 2).collect::<Vec<u32>>());
+x.sort();
+println!("sort {:?}",x);
+println!("the summ {}",x.iter().sum::<u32>());
+println!("min {:?}",x.iter().min().unwrap());
+println!("max {:?}",x.iter().max().unwrap());
+
+println!("crazy try {}",x.iter().map(|it| it * 2).filter(|it| it >= &6).fold(1,|acc,it| it*acc));
+
 }
